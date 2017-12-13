@@ -1,0 +1,7 @@
+// This is a template.  Default values are set in ../scripts/prebuild.js
+// The idea here is to allow simpler configuration in a CI/CD environment
+
+export const environment = {
+  production: '<%= PRODUCTION %>',
+  api_url: '<%= API_URL %>'
+};
