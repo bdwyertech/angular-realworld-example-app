@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { User, UserService, Profile } from '../shared';
 
 @Component({
-  selector: 'profile-page',
+  selector: 'app-profile-page',
   templateUrl: './profile.component.html'
 })
 export class ProfileComponent implements OnInit {
@@ -18,6 +18,7 @@ export class ProfileComponent implements OnInit {
   isUser: boolean;
 
   ngOnInit() {
+    //TODO: mergeMap here
     this.route.data.subscribe(
       (data: {profile: Profile}) => {
         this.profile = data.profile;

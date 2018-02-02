@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { ArticleListConfig, TagsService, UserService } from '../shared';
 
 @Component({
-  selector: 'home-page',
+  selector: 'app-home-page',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
@@ -16,7 +16,10 @@ export class HomeComponent implements OnInit {
   ) {}
 
   isAuthenticated: boolean;
-  listConfig: ArticleListConfig = new ArticleListConfig();
+  listConfig: ArticleListConfig = {
+    type: 'all',
+    filters: {}
+  };
   tags: Array<string> = [];
   tagsLoaded = false;
 

@@ -1,27 +1,26 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
 
 import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';
 import { User } from '../models';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 
 
 @Injectable()
 export class UserService {
-  private currentUserSubject = new BehaviorSubject<User>(new User());
-  public currentUser = this.currentUserSubject.asObservable().distinctUntilChanged();
+  private currentUserSubject = new BehaviorSubject<User>({} as User);
+  public currentUser = this.currentUserSubject.asObservable().pipe(distinctUntilChanged());
 
   private isAuthenticatedSubject = new ReplaySubject<boolean>(1);
   public isAuthenticated = this.isAuthenticatedSubject.asObservable();
 
   constructor (
     private apiService: ApiService,
-    private http: Http,
+    private http: HttpClient,
     private jwtService: JwtService
   ) {}
 
@@ -54,7 +53,7 @@ export class UserService {
     // Remove JWT from localstorage
     this.jwtService.destroyToken();
     // Set current user to an empty object
-    this.currentUserSubject.next(new User());
+    this.currentUserSubject.next({} as User);
     // Set auth status to false
     this.isAuthenticatedSubject.next(false);
   }
@@ -62,12 +61,12 @@ export class UserService {
   attemptAuth(type, credentials): Observable<User> {
     const route = (type === 'login') ? '/login' : '';
     return this.apiService.post('/users' + route, {user: credentials})
-    .map(
+      .pipe(map(
       data => {
         this.setAuth(data.user);
         return data;
       }
-    );
+    ));
   }
 
   getCurrentUser(): User {
@@ -78,11 +77,11 @@ export class UserService {
   update(user): Observable<User> {
     return this.apiService
     .put('/user', { user })
-    .map(data => {
+    .pipe(map(data => {
       // Update the currentUser observable
       this.currentUserSubject.next(data.user);
       return data.user;
-    });
+    }));
   }
 
 }

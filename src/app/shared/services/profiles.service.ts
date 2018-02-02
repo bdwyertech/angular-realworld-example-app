@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+import { Observable } from 'rxjs/Observable';
 
 import { ApiService } from './api.service';
 import { Profile } from '../models';
+import { map } from 'rxjs/operators/map';
 
 @Injectable()
 export class ProfilesService {
@@ -14,15 +13,15 @@ export class ProfilesService {
 
   get(username: string): Observable<Profile> {
     return this.apiService.get('/profiles/' + username)
-           .map((data: {profile: Profile}) => data.profile);
+      .pipe(map((data: {profile: Profile}) => data.profile));
   }
 
   follow(username: string): Observable<Profile> {
-    return this.apiService.post('/profiles/' + username + '/follow')
+    return this.apiService.post('/profiles/' + username + '/follow');
   }
 
   unfollow(username: string): Observable<Profile> {
-    return this.apiService.delete('/profiles/' + username + '/follow')
+    return this.apiService.delete('/profiles/' + username + '/follow');
   }
 
 }
